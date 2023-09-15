@@ -1,73 +1,45 @@
 #include <iostream>
-#include <bitset>
-#include <string>
 using namespace std;
-// Função para converter um número decimal para binário
-string decimalParaBinario(int decimal)
-{
-	string binario = "";
-	while (decimal > 0)
-	{
-		int bit = decimal % 2;
-		binario = to_string(bit) + binario;
-		decimal /= 2;
+int transformaBinario(int num) {
+	int bin = 0, rem = 0, place = 1;
+	while (num) {
+		rem = num % 2;
+		num = num / 2;
+		bin = bin + (rem * place);
+		place = place * 10;
 	}
-	return binario;
+	return bin;
 }
-
-// Função para converter um número binário para decimal
-int binarioParaDecimal(string binario)
-{
-	int decimal = 0;
-	int tamanho = binario.length();
-	for (int i = 0; i < tamanho; i++)
-		if (binario[i] == '1')
-			decimal += 1 << (tamanho - 1 - i);
-	return decimal;
-}
-
-// Função para realizar a soma de dois números binários usando operadores lógicos
-string somaBinaria(string binario1, string binario2)
-{
-	string resultado = "";
-	int carry = 0;
-	int tamanho1 = binario1.length();
-	int tamanho2 = binario2.length();
-	int tamanhoMax = max(tamanho1, tamanho2);
-	for (int i = 0; i < tamanhoMax; i++)
-	{
-		int bit1 = (i < tamanho1) ? (binario1[tamanho1 - 1 - i] - '0') : 0;
-		int bit2 = (i < tamanho2) ? (binario2[tamanho2 - 1 - i] - '0') : 0;
-		int soma = (bit1 ^ bit2) ^ carry; // Soma usando operadores XOR
-		carry = (bit1 & bit2) | (carry & (bit1 ^ bit2)); // Cálculo do carry
-		resultado = to_string(soma) + resultado;
+int somaBinaria(int bin1, int bin2) {
+	int carry = 0, result = 0, bit1, bit2; // carry = "vai um"
+	int place = 1; // controlar a posição do dígito atual no número binário resultante -- sempre multiplicada por 10 a cada interação do looping
+	while (bin1 || bin2) {
+		bit1 = bin1 % 10;
+		bit2 = bin2 % 10;
+		int sum = bit1 ^ bit2 ^ carry; //a soma dos bits usando XOR, sum é o numero atual da soma
+		carry = (bit1 & bit2) | (carry & (bit1 ^ bit2)); // quando usado o &, determina se há "vai um" entre as somas
+		result = result + (sum * place);
+		place = place * 10;
+		bin1 = bin1 / 10;	//deslocando eles a direita
+		bin2 = bin2 / 10;
 	}
 	if (carry)
-		resultado = "1" + resultado;
-	return resultado;
+		result = result + (carry * place);
+	return result;
 }
 
 int main() {
-	int numero1, numero2;
-	cout << "Digite o primeiro número decimal: ";
-	cin >> numero1;
-
-	cout << "Digite o segundo número decimal: ";
-	cin >> numero2;
-
-	// Converter os números decimais para binário
-	string binario1 = decimalParaBinario(numero1);
-	string binario2 = decimalParaBinario(numero2);
-
-	// Realizar a soma dos números binários usando apenas operadores lógicos
-	string resultadoBinario = somaBinaria(binario1, binario2);
-
-	// Converter o resultado de volta para decimal
-	int resultadoDecimal = binarioParaDecimal(resultadoBinario);
-
-	// Exibir os resultados
-	cout << "Soma em binário: " << resultadoBinario << endl;
-	cout << "Soma em decimal: " << resultadoDecimal << endl;
-
+	int num1, num2;
+	cout << "Informe o primeiro numero decimal: ";
+	cin >> num1;
+	cout << "Informe o segundo numero decimal: ";
+	cin >> num2;
+	int bin1 = transformaBinario(num1);
+	cout << "Decimal 1 em binario: " << bin1 << endl;
+	int bin2 = transformaBinario(num2);
+	cout << "Decimal 2 em binario: " << bin2 << endl;
+	int resultado = somaBinaria(bin1, bin2);
+	cout << "O resultado da soma binaria e: " << resultado << endl;
+	cout << "O resultado da soma decimal e: " << num1 + num2 << endl;
 	return 0;
 }
