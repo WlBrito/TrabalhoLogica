@@ -13,18 +13,18 @@ int transformaBinario(int num) {
 int somaBinaria(int bin1, int bin2) {
 	int carry = 0, result = 0, bit1, bit2; // carry = "vai um"
 	int place = 1; // controlar a posição do dígito atual no número binário resultante -- sempre multiplicada por 10 a cada interação do looping
+
 	while (bin1 || bin2) {
 		bit1 = bin1 % 10;
 		bit2 = bin2 % 10;
 		int sum = bit1 ^ bit2 ^ carry; //a soma dos bits usando XOR, sum é o numero atual da soma
-		carry = (bit1 & bit2) | (carry & (bit1 ^ bit2)); // quando usado o &, determina se há "vai um" entre as somas
 		result = result + (sum * place);
-		place = place * 10;
-		bin1 = bin1 / 10;	//deslocando eles a direita
+		carry = (bit1 & bit2) | (carry & (bit1 ^ bit2)); // quando usado o &, determina se há "vai um" entre as somas
+		bin1 = bin1 / 10; //deslocando eles a direita
 		bin2 = bin2 / 10;
+		place = place * 10;
 	}
-	if (carry)
-		result = result + (carry * place);
+	result = result + (carry * place); // Adiciona o carry final, se houver, ou seja, verifica se tem o vai um e coloca no lugar certo
 	return result;
 }
 
